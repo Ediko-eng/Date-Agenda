@@ -34,3 +34,5 @@ Date Agenda/
 │-- admin.js        # Administrative scripts and core functional logic
 │-- style.css       # Main stylesheet for responsive design and UI formatting
 └── README.md       # Project documentation and setup instructions
+
+## 📄 License
