@@ -35,5 +35,16 @@ Date Agenda/
 │-- style.css       # Main stylesheet for responsive design and UI formatting
 └── README.md       # Project documentation and setup instructions
 
+---
 ## 📄 License
+```text
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for complete details.
+
+### What this means:
+- **Commercial use**: Permitted.
+- **Modification**: Permitted.
+- **Distribution**: Permitted.
+- **Private use**: Permitted.
+- **Condition**: Must include the original copyright notice and license text in all copies or substantial portions of the software.
 https://github.com/Ediko-eng/Date-Agenda/edit/main/LICENSE
+---
