@@ -1,5 +1,4 @@
-﻿# Date-Agenda
-# Date Agenda 📅
+﻿# Date Agenda 📅
 
 **Date Agenda** is a modern, lightweight web application designed to help users efficiently plan, organize, and manage daily schedules, events, and agenda items. With an integrated administrative module, administrators can seamlessly manage entries, task configurations, and backend logic.
 
