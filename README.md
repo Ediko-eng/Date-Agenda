@@ -35,8 +35,9 @@ Date Agenda/
 │-- style.css       # Main stylesheet for responsive design and UI formatting
 └── README.md       # Project documentation and setup instructions
 
----
+
 ## 📄 License
+
 ```text
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for complete details.
 
