@@ -36,3 +36,4 @@ Date Agenda/
 └── README.md       # Project documentation and setup instructions
 
 ## 📄 License
+https://github.com/Ediko-eng/Date-Agenda/edit/main/LICENSE
