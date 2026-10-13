@@ -1,0 +1,44 @@
+# =====================================================================
+# Date Agenda - access hardening (Apache 2.4)
+# =====================================================================
+
+# Hide server signature and disable directory listings.
+ServerSignature Off
+Options -Indexes
+
+# Serve UTF-8 by default.
+AddDefaultCharset UTF-8
+
+# ---------------------------------------------------------------------
+# Block the installer and any database dump / backup / source files.
+# ---------------------------------------------------------------------
+<Files "install.php">
+    Require all denied
+</Files>
+
+<FilesMatch "\.(sql|sql\.gz|sql\.bz2|dump|bak|old|orig|swp|save|tmp)$">
+    Require all denied
+</FilesMatch>
+
+# Block hidden files (.env, .git internals, editor temp files) and docs.
+<FilesMatch "(^\.|\.(env|ini|log|md|markdown|json|lock|sh|bat|ps1|yml|yaml|dist|example|sample)$)">
+    Require all denied
+</FilesMatch>
+
+# ---------------------------------------------------------------------
+# Never expose the internal includes folder over HTTP
+# (belt-and-suspenders with inc/.htaccess; works in any sub-folder).
+# ---------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^inc/ - [F,L]
+</IfModule>
+
+# ---------------------------------------------------------------------
+# Basic security headers.
+# ---------------------------------------------------------------------
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
