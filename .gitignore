@@ -12,3 +12,4 @@ inc/config.php
 # OS / editor
 Thumbs.db
 .DS_Store
+.qodo/
