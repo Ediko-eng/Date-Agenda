@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { addInvitation, getInvitation, getAllInvitations, deleteInvitation, updateInvitation, encodeInvite, decodeInvite, buildInviteLink, getSession, getSessionInfo, loginUser, registerUser, logoutUser, recordView, getViews, addPhoto, getPhotos, deletePhoto } from './simple-db.js?v=7';
-=======
-import { addInvitation, getInvitation, updateInvitation, verifyUser, encodeInvite, decodeInvite, buildInviteLink } from './simple-db.js';
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
 
 document.addEventListener('DOMContentLoaded', () => {
   let currentInviteId = new URLSearchParams(location.search).get('i');
@@ -10,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Invitation data embedded in the URL (#d=...) — works with zero backend
   const hashMatch = location.hash.match(/[#&]d=([^&]+)/);
   const sharedInvite = hashMatch ? decodeInvite(hashMatch[1]) : null;
-<<<<<<< HEAD
   // A self-contained link is a receiver link even when it carries no ?i= id.
   if (!currentInviteId && sharedInvite && sharedInvite.id) currentInviteId = String(sharedInvite.id);
   const hasShareLink = !!(currentInviteId || sharedInvite);
@@ -25,10 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Switch the page into the guest (receiver) experience
   function applyReceiverView() {
-=======
-
-  if (currentInviteId) {
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
     const genBtn = document.getElementById('generate-btn');
     if (genBtn) genBtn.style.display = 'none';
     const loginBtn = document.getElementById('loginToggleBtn');
@@ -40,11 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const questionEl = document.querySelector('.letter-question');
     const footnoteEl = document.querySelector('.letter-footnote');
     if (titleEl) titleEl.textContent = 'Hello Beautiful,';
-<<<<<<< HEAD
     if (questionEl) questionEl.innerHTML = 'Would you like to go on a date with me,<br>hang out with me,<br>spend time with me?';
-=======
-    if (questionEl) questionEl.innerHTML = 'Would you go on a date with me,<br>hang out with me,<br>spend time with me?';
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
     if (footnoteEl) footnoteEl.innerHTML = '🌸 (the No button has a mind of its own...)';
 
     // Recipient view: read-only, no editing allowed
@@ -54,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (recipientPanel) recipientPanel.classList.remove('hidden');
   }
 
-<<<<<<< HEAD
   // Load the PHP session, then decide whether we're the host or a guest.
   // Opening a shared link ALWAYS shows the receiver (guest) experience, no login —
   // for everyone, including the creator/admin. The host dashboard lives at the
@@ -75,9 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     updateLoginUI();
   }).catch(() => {});
-=======
-  let currentUser = sessionStorage.getItem('currentUser') || null;
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
 
   // ========== DARK MODE TOGGLE ==========
   const themeToggleBtn = document.getElementById('themeToggleBtn');
@@ -137,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginPassInput = document.getElementById('loginPassInput');
   const loginModalBtn = document.getElementById('loginModalBtn');
   const loginModalError = document.getElementById('loginModalError');
-<<<<<<< HEAD
   const loginModalInfo = document.getElementById('loginModalInfo');
   const loginModalClose = document.getElementById('loginModalClose');
   const loginModalTitle = document.getElementById('loginModalTitle');
@@ -154,10 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let loginGateActive = false;
   let loginMode = 'login';
   let currentUserProfile = null;
-=======
-  const loginModalClose = document.getElementById('loginModalClose');
-  const userStatus = document.getElementById('userStatus');
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
 
   function updateLoginUI() {
     if (currentUser) {
@@ -168,7 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
       userStatus.classList.add('hidden');
       loginToggleBtn.textContent = 'Login';
     }
-<<<<<<< HEAD
     // Receivers (opened a shared link) don't get the Account link in the top bar
     if (accountLink) accountLink.classList.toggle('hidden', hasShareLink);
   }
@@ -238,26 +215,10 @@ document.addEventListener('DOMContentLoaded', () => {
       resetToEnvelope();
     } else {
       setLoginMode('login');
-=======
-  }
-  updateLoginUI();
-
-  function showLoginModal() { loginModal.classList.remove('hidden'); loginModal.classList.add('flex'); loginEmailInput.focus(); }
-  function hideLoginModal() { loginModal.classList.add('hidden'); loginModal.classList.remove('flex'); }
-  registerModal(loginModal, hideLoginModal);
-
-  loginToggleBtn.addEventListener('click', () => {
-    if (currentUser) {
-      currentUser = null;
-      sessionStorage.removeItem('currentUser');
-      updateLoginUI();
-    } else {
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
       showLoginModal();
     }
   });
 
-<<<<<<< HEAD
   // Single sign-in: after authenticating, the account's role decides where to go.
   // The superadmin is sent straight to the admin panel; everyone else stays here.
   async function routeIfAdmin() {
@@ -349,24 +310,6 @@ document.addEventListener('DOMContentLoaded', () => {
       loginModalBtn.disabled = false;
       loginModalBtn.textContent = loginMode === 'register' ? 'Create account' : originalLabel;
       setLoginMode(loginMode);
-=======
-  loginModalBtn.addEventListener('click', async () => {
-    loginModalError.classList.add('hidden');
-    const email = loginEmailInput.value.trim();
-    const pass = loginPassInput.value;
-    if (!email || !pass) { loginModalError.textContent = 'Fill in all fields'; loginModalError.classList.remove('hidden'); return; }
-    const user = await verifyUser(email, pass);
-    if (user) {
-      currentUser = email;
-      sessionStorage.setItem('currentUser', email);
-      updateLoginUI();
-      hideLoginModal();
-      loginEmailInput.value = '';
-      loginPassInput.value = '';
-    } else {
-      loginModalError.textContent = 'Invalid email or password';
-      loginModalError.classList.remove('hidden');
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
     }
   });
 
@@ -396,7 +339,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 600);
     }
 
-<<<<<<< HEAD
     // Return to the very first screen (closed envelope) — used after logout
     function resetToEnvelope() {
       const loadingOverlay = document.getElementById('loadingOverlay');
@@ -449,12 +391,6 @@ document.addEventListener('DOMContentLoaded', () => {
           if (envelopeOverlay) { envelopeOverlay.style.opacity = '0'; envelopeOverlay.style.display = 'none'; }
           openLoginGate();
         }, 1100);
-=======
-    if (heartOpenBtn) {
-      heartOpenBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        openEnvelopeRomance();
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
       });
     }
 
@@ -479,13 +415,8 @@ document.addEventListener('DOMContentLoaded', () => {
       noBtn.addEventListener('click', evade);
     }
 
-<<<<<<< HEAD
     // Hearts flying animation
     function spawnHearts() {
-=======
-    // Heart burst and reveal main app on Yes
-    function burstHeartsAndReveal() {
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
       for (let i = 0; i < 50; i++) {
         setTimeout(() => {
           const heart = document.createElement('div');
@@ -518,7 +449,6 @@ document.addEventListener('DOMContentLoaded', () => {
           requestAnimationFrame(fly);
         }, i * 20);
       }
-<<<<<<< HEAD
     }
 
     // Hearts + reveal main app on Yes
@@ -526,62 +456,29 @@ document.addEventListener('DOMContentLoaded', () => {
       spawnHearts();
       setTimeout(() => {
         showLoadingAndReveal();
-=======
-      setTimeout(() => {
-        if (envelopeOverlay) {
-          envelopeOverlay.style.opacity = '0';
-          setTimeout(() => {
-            envelopeOverlay.style.display = 'none';
-            if (mainApp) {
-              mainApp.classList.remove('hidden-app');
-              mainApp.style.display = 'block';
-              initDatePlanner();
-            }
-          }, 400);
-        }
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
       }, 200);
     }
 
     if (yesBtn) {
       yesBtn.addEventListener('click', async (e) => {
         e.preventDefault();
-<<<<<<< HEAD
         // Receiver: let her plan the date (name, pickup, when, where, what to wear)
         // opened once the loading screen finishes and the planner is ready.
         if (!hasShareLink && !currentUser) { openLoginGate(); return; }
         if (hasShareLink) pendingPlanModal = true;
-=======
-
-        if (currentInviteId) {
-          try {
-            await updateInvitation(currentInviteId, {
-              status: 'accepted',
-              respondedAt: new Date().toISOString(),
-              acceptedAt: new Date().toISOString()
-            });
-          } catch (err) { console.error(err); }
-        }
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
         burstHeartsAndReveal();
       });
     }
 
     // ========== DATE PLANNER ==========
     function initDatePlanner() {
-<<<<<<< HEAD
       if (initDatePlanner._done) return;
       initDatePlanner._done = true;
-=======
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
       const inputDateTime = document.getElementById('input-datetime');
       const inputLocation = document.getElementById('input-location');
       const inputDress = document.getElementById('input-dress');
       const inputActivity = document.getElementById('input-activity');
-<<<<<<< HEAD
       let inputSong = document.getElementById('input-song');
-=======
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
       const previewDate = document.getElementById('preview-date');
       const previewLocation = document.getElementById('preview-location');
       const previewDress = document.getElementById('preview-dress');
@@ -633,11 +530,7 @@ document.addEventListener('DOMContentLoaded', () => {
           // Read-only recipient details: "from" + formatted date
           const fromEl = document.getElementById('preview-from');
           const rdFrom = document.getElementById('rd-from');
-<<<<<<< HEAD
           const sender = (d.creatorName && String(d.creatorName)) || (d.createdBy ? String(d.createdBy).split('@')[0] : 'someone special');
-=======
-          const sender = d.createdBy ? String(d.createdBy).split('@')[0] : 'someone special';
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
           if (fromEl) fromEl.textContent = sender;
           if (rdFrom) rdFrom.textContent = sender;
           if (d.date) {
@@ -648,7 +541,6 @@ document.addEventListener('DOMContentLoaded', () => {
           const rdLoc = document.getElementById('rd-location');
           const rdDress = document.getElementById('rd-dress');
           const rdAct = document.getElementById('rd-activity');
-<<<<<<< HEAD
           const rdPickup = document.getElementById('rd-pickup');
           if (rdLoc) rdLoc.textContent = d.location || '—';
           if (rdDress) rdDress.textContent = d.dressCode || '—';
@@ -661,11 +553,6 @@ document.addEventListener('DOMContentLoaded', () => {
           if (planActivity && d.activity) planActivity.value = d.activity;
           if (planDress && d.dressCode) planDress.value = d.dressCode;
           if (planDatetime && d.date) planDatetime.value = String(d.date).replace(' ', 'T').slice(0, 16);
-=======
-          if (rdLoc) rdLoc.textContent = d.location || '—';
-          if (rdDress) rdDress.textContent = d.dressCode || '—';
-          if (rdAct) rdAct.textContent = d.activity || '—';
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
 
           // Already responded earlier? Show it and lock the buttons
           if ((d.status === 'accepted' || d.status === 'declined') && acceptBtn && declineBtn && !acceptBtn.disabled) {
@@ -698,16 +585,11 @@ document.addEventListener('DOMContentLoaded', () => {
         secs: document.getElementById('cd-secs')
       };
       const countdownLabel = document.getElementById('countdown-label');
-<<<<<<< HEAD
       // Countdown only runs when the card holds a confirmed (accepted) plan.
       let officialCardActive = true;
 
       function updateCountdown() {
         if (!officialCardActive) { if (countdownBox) countdownBox.classList.add('hidden'); return; }
-=======
-
-      function updateCountdown() {
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
         if (!countdownBox || !inputDateTime.value) { if (countdownBox) countdownBox.classList.add('hidden'); return; }
         const target = new Date(inputDateTime.value).getTime();
         if (isNaN(target)) { countdownBox.classList.add('hidden'); return; }
@@ -729,7 +611,6 @@ document.addEventListener('DOMContentLoaded', () => {
       setInterval(updateCountdown, 1000);
       inputDateTime.addEventListener('input', updateCountdown);
 
-<<<<<<< HEAD
       // Blank the "Official Request" card (no confirmed plan yet)
       function blankOfficialCard() {
         officialCardActive = false;
@@ -769,11 +650,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (generateBtn) generateBtn.addEventListener('click', async () => {
         if (!currentUser) { openLoginGate(); return; }
-=======
-
-
-      if (generateBtn) generateBtn.addEventListener('click', async () => {
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
         try {
           const data = {
             date: inputDateTime.value,
@@ -785,7 +661,6 @@ document.addEventListener('DOMContentLoaded', () => {
             createdAt: new Date().toISOString()
           };
           if (currentUser) data.createdBy = currentUser;
-<<<<<<< HEAD
           const creatorName = (currentUserProfile && currentUserProfile.full_name) || currentUser || '';
           if (creatorName) data.creatorName = creatorName;
           const newId = await addInvitation(data);
@@ -798,15 +673,6 @@ document.addEventListener('DOMContentLoaded', () => {
           lastKnownStatus = null;
           checkRSVP();
           loadSenderHistory();
-=======
-          const newId = await addInvitation(data);
-          currentInviteId = newId;
-          const link = buildInviteLink(newId, data);
-          history.replaceState({}, '', `?i=${newId}#d=${encodeInvite({ ...data, id: newId })}`);
-          document.getElementById('mock-link').textContent = link;
-          lastKnownStatus = null;
-          checkRSVP();
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
           const shareBtn = document.getElementById('shareLinkBtn');
           if (shareBtn) shareBtn.hidden = !(navigator.share && navigator.canShare);
           if (modalOverlay) modalOverlay.style.display = 'flex';
@@ -825,11 +691,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // ========== REAL MUSIC PLAYER ==========
       const audio = document.getElementById('songAudio');
-<<<<<<< HEAD
       inputSong = document.getElementById('input-song');
-=======
-      const inputSong = document.getElementById('input-song');
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
       const songTitleEl = document.getElementById('song-title');
       const songTrack = document.getElementById('song-track');
       const songCur = document.getElementById('song-cur');
@@ -930,7 +792,6 @@ document.addEventListener('DOMContentLoaded', () => {
       let respondMode = 'accept';
       const acceptModalTitle = document.getElementById('acceptModalTitle');
       const acceptModalDesc = document.getElementById('acceptModalDesc');
-<<<<<<< HEAD
       const planFields = document.getElementById('planFields');
       const planPickup = document.getElementById('planPickup');
       const planDatetime = document.getElementById('planDatetime');
@@ -952,23 +813,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const emoji = acceptNameModal.querySelector('.text-4xl');
         if (emoji) emoji.textContent = mode === 'accept' ? '💕' : '🍃';
         if (confirmAcceptBtn) confirmAcceptBtn.textContent = mode === 'accept' ? 'Send my answer 💌' : 'Yes, Decline';
-=======
-
-      function openResponseModal(mode) {
-        respondMode = mode;
-        if (acceptModalTitle) acceptModalTitle.textContent = mode === 'accept' ? "You're Accepting!" : "You're Declining";
-        if (acceptModalDesc) acceptModalDesc.textContent = mode === 'accept'
-          ? 'Enter your name so the host knows who accepted'
-          : 'Enter your name so the host knows — honesty is a gift too';
-        const emoji = acceptNameModal.querySelector('.text-4xl');
-        if (emoji) emoji.textContent = mode === 'accept' ? '💕' : '🍃';
-        if (confirmAcceptBtn) confirmAcceptBtn.textContent = mode === 'accept' ? 'Confirm' : 'Yes, Decline';
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
         acceptNameModal.classList.remove('hidden');
         acceptNameModal.classList.add('flex');
         acceptNameInput.focus();
       }
-<<<<<<< HEAD
       openResponseModalRef = openResponseModal;
 
       if (pendingPlanModal && currentInviteId) {
@@ -992,13 +840,6 @@ document.addEventListener('DOMContentLoaded', () => {
           ? { status: 'accepted', acceptedBy: name, message: message || '', respondedAt: now,
               pickupLocation: plan.pickupLocation || '', date: plan.date || '',
               location: plan.location || '', dressCode: plan.dressCode || '', activity: plan.activity || '' }
-=======
-
-      async function submitResponse(mode, name, message) {
-        const now = new Date().toISOString();
-        const patch = mode === 'accept'
-          ? { status: 'accepted', acceptedBy: name, message: message || '', respondedAt: now, acceptedAt: now }
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
           : { status: 'declined', declinedBy: name, message: message || '', respondedAt: now };
 
         if (currentInviteId) {
@@ -1030,7 +871,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!name) { acceptNameError.classList.remove('hidden'); return; }
         acceptNameError.classList.add('hidden');
         const message = acceptMessageInput ? acceptMessageInput.value.trim() : '';
-<<<<<<< HEAD
         const plan = respondMode === 'accept' ? {
           pickupLocation: planPickup ? planPickup.value.trim() : '',
           date: planDatetime ? planDatetime.value : '',
@@ -1041,10 +881,6 @@ document.addEventListener('DOMContentLoaded', () => {
         hideAcceptNameModal();
         submitResponse(respondMode, name, message, plan);
         if (respondMode === 'accept' && currentInviteId) loadInvitationData(currentInviteId);
-=======
-        hideAcceptNameModal();
-        submitResponse(respondMode, name, message);
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
       });
 
       acceptNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') confirmAcceptBtn.click(); });
@@ -1104,7 +940,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (calendarBtn) calendarBtn.addEventListener('click', downloadICS);
-<<<<<<< HEAD
 
       // ========== SENDER VIEW: no accept/decline, calendar only when accepted ==========
       const creatorPanelEl = document.getElementById('creator-panel');
@@ -1114,8 +949,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (rsvpActions) rsvpActions.style.display = 'none';
         blankOfficialCard();
       }
-=======
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
     }
 
     // ========== GALLERY WITH LIGHTBOX ==========
@@ -1255,7 +1088,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!isError) setTimeout(() => albumMsg.classList.add('hidden'), 4000);
     }
 
-<<<<<<< HEAD
     function mapPhoto(p) {
       return { id: p.id, data: p.data, by: p.uploaded_by, at: p.created_at };
     }
@@ -1266,28 +1098,6 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (e) {
         console.warn('Could not load the shared album.', e);
         return [];
-=======
-    async function getAlbum() {
-      try {
-        const inv = await getInvitation(currentInviteId);
-        if (inv && Array.isArray(inv.photos)) return inv.photos;
-      } catch {}
-      try {
-        const raw = localStorage.getItem(`amour_album_${currentInviteId}`);
-        if (raw) return JSON.parse(raw);
-      } catch {}
-      return [];
-    }
-
-    async function setAlbum(photos) {
-      try { localStorage.setItem(`amour_album_${currentInviteId}`, JSON.stringify(photos)); } catch {}
-      try {
-        await updateInvitation(currentInviteId, { photos });
-        return true;
-      } catch (e) {
-        console.warn('Album saved on this device only (database unreachable).', e);
-        return false;
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
       }
     }
 
@@ -1343,17 +1153,12 @@ document.addEventListener('DOMContentLoaded', () => {
         delBtn.addEventListener('click', async (e) => {
           e.stopPropagation();
           if (!confirm('Delete this photo?')) return;
-<<<<<<< HEAD
           try {
             await deletePhoto(photo.id);
           } catch (err) {
             showAlbumMsg(err.message || 'Could not delete that photo', true);
             return;
           }
-=======
-          const updated = (await getAlbum()).filter((_, i) => i !== idx);
-          await setAlbum(updated);
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
           renderAlbum();
         });
         figure.appendChild(delBtn);
@@ -1380,18 +1185,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const files = Array.from(photoInput.files || []);
         if (!files.length || !currentInviteId) return;
         photoInput.value = '';
-<<<<<<< HEAD
         const existing = await getAlbum();
         const room = MAX_PHOTOS - existing.length;
-=======
-        let photos = await getAlbum();
-        const room = MAX_PHOTOS - photos.length;
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
         if (room <= 0) { showAlbumMsg(`Album is full (${MAX_PHOTOS} photos). Delete one to add another.`, true); return; }
         const toAdd = files.slice(0, room);
         if (files.length > room) showAlbumMsg(`Album holds ${MAX_PHOTOS} photos — only the first ${toAdd.length} were added.`, true);
         showAlbumMsg('Adding photo(s)...');
-<<<<<<< HEAD
         let added = 0;
         for (const file of toAdd) {
           try {
@@ -1411,30 +1210,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentInviteId && momentsSection && !momentsSection.classList.contains('hidden')) renderAlbum();
     }, 10000);
 
-=======
-        try {
-          for (const file of toAdd) {
-            const data = await compressImage(file);
-            photos.push({ data, by: currentUser || 'Anonymous', at: new Date().toISOString() });
-          }
-          const synced = await setAlbum(photos);
-          await renderAlbum();
-          showAlbumMsg(synced ? 'Photo added — it\'s live for both of you ✨' : 'Saved on this device (will sync when online)', !synced);
-        } catch (err) {
-          showAlbumMsg(err.message || 'Could not add that photo', true);
-        }
-      });
-    }
-
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
     // ========== SENDER: LIVE RSVP STATUS ==========
     const rsvpStatusBox = document.getElementById('rsvp-status');
     const rsvpStatusText = document.getElementById('rsvp-status-text');
     const rsvpStatusDetail = document.getElementById('rsvp-status-detail');
-<<<<<<< HEAD
     const rsvpPlanEl = document.getElementById('rsvp-plan');
-=======
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
     let lastKnownStatus = null;
 
     function showToast(message) {
@@ -1472,7 +1252,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (status === 'accepted') {
         rsvpStatusText.textContent = '💕 She accepted!';
         rsvpStatusDetail.textContent = `${d.acceptedBy ? d.acceptedBy + ' said yes' : 'She said yes'}${when ? ' · ' + when : ''}${d.message ? ` — "${d.message}"` : ''}`;
-<<<<<<< HEAD
         if (rsvpPlanEl) {
           const dt = d.date ? new Date(String(d.date).replace(' ', 'T')) : null;
           const whenStr = dt && !isNaN(dt) ? dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) + ' · ' + dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—';
@@ -1502,14 +1281,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (updateOfficialCardRef) updateOfficialCardRef(d);
       } else if (updateOfficialCardBlankRef) {
         updateOfficialCardBlankRef();
-=======
-      } else if (status === 'declined') {
-        rsvpStatusText.textContent = '🍃 She declined';
-        rsvpStatusDetail.textContent = `${d.declinedBy ? d.declinedBy + ' responded' : 'A response arrived'}${when ? ' · ' + when : ''}${d.message ? ` — "${d.message}"` : ''}`;
-      } else {
-        rsvpStatusText.textContent = '⏳ Waiting for her answer…';
-        rsvpStatusDetail.textContent = 'Share the link — her reply will appear here instantly.';
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
       }
 
       if (lastKnownStatus !== null && lastKnownStatus !== 'accepted' && status === 'accepted' && rsvpStatusBox.offsetParent !== null) {
@@ -1524,7 +1295,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(checkRSVP, 8000);
     checkRSVP();
 
-<<<<<<< HEAD
     // ========== SENDER: INVITATION HISTORY ==========
     const sentHistory = document.getElementById('sent-history');
     const sentHistoryBody = document.getElementById('sent-history-body');
@@ -1766,8 +1536,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateViews, 8000);
     updateViews();
 
-=======
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
     const createInviteTop = document.getElementById('createInviteTop');
     if (createInviteTop) {
       createInviteTop.addEventListener('click', () => {
@@ -1775,13 +1543,10 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-<<<<<<< HEAD
     // Creator (no invitation link): opening the envelope skips the question (see heartToOpen
     // handler) and goes straight to loading → create-link page.
     // Only the receiver (opened a ?i= link) sees the "may I take you out" question.
 
-=======
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
     if (mainApp && !mainApp.classList.contains('hidden-app')) {
       initDatePlanner();
     }

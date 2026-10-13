@@ -1,18 +1,11 @@
-<<<<<<< HEAD
 import { getAllInvitations, deleteInvitation, getUsers, addUser, deleteUser, updateUser, verifyUser, getAllViewCounts, getUserDetail, getLogins, deleteLogin, clearLogins, getSessionInfo, adminLogout } from './simple-db.js?v=7';
-=======
-import { getAllInvitations, deleteInvitation, getUsers, addUser, deleteUser, updateUser, verifyUser, addInvitation, buildInviteLink } from './simple-db.js';
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
 
 const $ = id => document.getElementById(id);
 
 const loginSection = $('loginSection');
 const dashboardSection = $('dashboardSection');
 const displayAdminEmail = $('displayAdminEmail');
-<<<<<<< HEAD
 const displayAdminEmailMobile = $('displayAdminEmailMobile');
-=======
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
 const tableBody = $('tableBody');
 const adminEmail = $('adminEmail');
 const adminPass = $('adminPass');
@@ -20,7 +13,6 @@ const loginBtn = $('loginBtn');
 const loginError = $('loginError');
 
 const tabInvitations = $('tabInvitations');
-<<<<<<< HEAD
 const tabUsers = $('tabUsers');
 const tabResponses = $('tabResponses');
 const tabLogins = $('tabLogins');
@@ -33,30 +25,11 @@ const responseCount = $('responseCount');
 const loginsTableBody = $('loginsTableBody');
 const refreshLoginsBtn = $('refreshLoginsBtn');
 const clearLoginsBtn = $('clearLoginsBtn');
-=======
-const tabCreate = $('tabCreate');
-const tabUsers = $('tabUsers');
-const tabResponses = $('tabResponses');
-const invitationsTab = $('invitationsTab');
-const createTab = $('createTab');
-const usersTab = $('usersTab');
-const responsesTab = $('responsesTab');
-const responsesList = $('responsesList');
-const responseCount = $('responseCount');
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
 
 const statTotal = $('statTotal');
 const statAccepted = $('statAccepted');
 const statPending = $('statPending');
 
-<<<<<<< HEAD
-=======
-const adminGenerateBtn = $('adminGenerateBtn');
-const adminGeneratedLink = $('adminGeneratedLink');
-const adminGenerateResult = $('adminGenerateResult');
-const adminCopyLink = $('adminCopyLink');
-
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
 const usersTableBody = $('usersTableBody');
 const newUserEmail = $('newUserEmail');
 const newUserPass = $('newUserPass');
@@ -68,7 +41,6 @@ const editUserPass = $('editUserPass');
 const editUserMsg = $('editUserMsg');
 const editUserSaveBtn = $('editUserSaveBtn');
 const editUserCancelBtn = $('editUserCancelBtn');
-<<<<<<< HEAD
 let editingUserId = null;
 
 const userDetailModal = $('userDetailModal');
@@ -115,16 +87,12 @@ function toggleTheme() {
 [themeToggle, themeToggleMobile, themeToggleLogin].forEach(btn => {
   if (btn) btn.addEventListener('click', toggleTheme);
 });
-=======
-let editingUserEmail = null;
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
 
 let currentFilter = 'all';
 
 function show(el) { el.classList.remove('hidden'); }
 function hide(el) { el.classList.add('hidden'); }
 
-<<<<<<< HEAD
 // Tab switching with sidebar active state
 function switchTab(active) {
   [tabInvitations, tabUsers, tabResponses, tabLogins].forEach(t => t.classList.remove('sidebar-active'));
@@ -144,30 +112,6 @@ refreshLoginsBtn.addEventListener('click', () => loadLogins());
 // --- RESPONSES (RSVP tracking) ---
 async function loadResponses() {
   const invites = await getAllInvitations(true);
-=======
-function checkAuth() {
-  return sessionStorage.getItem('admin_email') !== null;
-}
-
-// Tab switching with sidebar active state
-function switchTab(active) {
-  [tabInvitations, tabCreate, tabUsers, tabResponses].forEach(t => t.classList.remove('sidebar-active'));
-  active.classList.add('sidebar-active');
-  hide(invitationsTab);
-  hide(createTab);
-  hide(usersTab);
-  hide(responsesTab);
-}
-
-tabInvitations.addEventListener('click', () => { switchTab(tabInvitations); show(invitationsTab); });
-tabCreate.addEventListener('click', () => { switchTab(tabCreate); show(createTab); });
-tabUsers.addEventListener('click', () => { switchTab(tabUsers); show(usersTab); loadUsers(); });
-tabResponses.addEventListener('click', () => { switchTab(tabResponses); show(responsesTab); loadResponses(); });
-
-// --- RESPONSES (RSVP tracking) ---
-async function loadResponses() {
-  const invites = await getAllInvitations();
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
   const accepted = invites
     .filter(i => i.status === 'accepted')
     .sort((a, b) => new Date(b.respondedAt || b.acceptedAt || b.createdAt) - new Date(a.respondedAt || a.acceptedAt || a.createdAt));
@@ -199,10 +143,7 @@ async function loadResponses() {
       ${inv.message ? `<p class="text-sm italic text-on-surface-variant border-l-2 border-primary/40 pl-3">"${inv.message}"</p>` : ''}
       <div class="text-xs text-on-surface-variant grid grid-cols-2 gap-2 pt-2 border-t border-outline-variant/30">
         <span>📅 <strong>${dateVal}</strong></span>
-<<<<<<< HEAD
         <span>🚗 Pick up: ${inv.pickupLocation || '—'}</span>
-=======
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
         <span>📍 ${inv.location || '—'}</span>
         <span>🎭 ${inv.activity || '—'}</span>
         <span>👔 ${inv.dressCode || '—'}</span>
@@ -227,19 +168,12 @@ statCards.forEach(card => {
   card.addEventListener('click', () => setActiveFilter(card.dataset.filter));
 });
 
-<<<<<<< HEAD
 function showDashboard(email) {
-=======
-function onLogin(email) {
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
   sessionStorage.setItem('admin_email', email);
   hide(loginSection);
   show(dashboardSection);
   displayAdminEmail.textContent = email;
-<<<<<<< HEAD
   if (displayAdminEmailMobile) displayAdminEmailMobile.textContent = email;
-=======
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
   loadStats();
   loadInvitations('all');
   setActiveFilter('all');
@@ -247,7 +181,6 @@ function onLogin(email) {
   show(invitationsTab);
 }
 
-<<<<<<< HEAD
 // Verify the admin session with the server (the admin panel keeps its own
 // signed cookie, independent of the public user session).
 async function bootAdmin() {
@@ -263,19 +196,6 @@ async function bootAdmin() {
   }
 }
 bootAdmin();
-=======
-if (checkAuth()) {
-  const email = sessionStorage.getItem('admin_email');
-  displayAdminEmail.textContent = email;
-  hide(loginSection);
-  show(dashboardSection);
-  loadStats();
-  loadInvitations('all');
-  setActiveFilter('all');
-  switchTab(tabInvitations);
-  show(invitationsTab);
-}
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
 
 // Login
 loginBtn.addEventListener('click', async () => {
@@ -285,7 +205,6 @@ loginBtn.addEventListener('click', async () => {
   if (!email || !pass) { loginError.textContent = 'Fill in all fields'; show(loginError); return; }
   const user = await verifyUser(email, pass);
   if (user) {
-<<<<<<< HEAD
     let info = null;
     try { info = await getSessionInfo(); } catch (e) {}
     if (info && info.is_admin) {
@@ -294,9 +213,6 @@ loginBtn.addEventListener('click', async () => {
       loginError.textContent = 'This account is not an admin';
       show(loginError);
     }
-=======
-    onLogin(email);
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
   } else {
     loginError.textContent = 'Invalid email or password';
     show(loginError);
@@ -305,12 +221,8 @@ loginBtn.addEventListener('click', async () => {
 
 adminPass.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
 
-<<<<<<< HEAD
 async function logout() {
   try { await adminLogout(); } catch (e) {}
-=======
-function logout() {
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
   sessionStorage.removeItem('admin_email');
   show(loginSection);
   hide(dashboardSection);
@@ -328,7 +240,6 @@ function statusBadge(status) {
 }
 
 async function loadStats() {
-<<<<<<< HEAD
   const invites = await getAllInvitations(true);
   const users = await getUsers();
   const counts = {
@@ -542,17 +453,6 @@ if ($('exportCsvBtn')) $('exportCsvBtn').addEventListener('click', exportInvitat
 async function loadInvitations(filter) {
   const invites = await getAllInvitations(true);
   const viewCounts = await getAllViewCounts().catch(() => ({}));
-=======
-  const invites = await getAllInvitations();
-  const users = await getUsers();
-  statTotal.textContent = invites.length;
-  statAccepted.textContent = invites.filter(i => i.status === 'accepted').length;
-  statPending.textContent = invites.filter(i => i.status === 'pending' || !i.status).length;
-}
-
-async function loadInvitations(filter) {
-  const invites = await getAllInvitations();
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
   tableBody.innerHTML = '';
 
   const filtered = filter && filter !== 'all'
@@ -575,10 +475,7 @@ async function loadInvitations(filter) {
     }) : '-';
 
     let responder = inv.acceptedBy ? `<span class="font-semibold text-primary">${inv.acceptedBy}</span>` : '<span class="text-on-surface-variant/50">—</span>';
-<<<<<<< HEAD
     const vc = viewCounts[inv.id] ? viewCounts[inv.id] : {};
-=======
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
 
     tr.innerHTML = `
       <td class="p-4 font-mono text-xs text-on-surface-variant">${inv.id.slice(0, 8)}</td>
@@ -588,10 +485,7 @@ async function loadInvitations(filter) {
       <td class="p-4">${responder}</td>
       <td class="p-4 text-xs text-on-surface-variant">${inv.createdBy || '—'}</td>
       <td class="p-4 max-w-[140px] truncate" title="${inv.location || ''}">${inv.location || '-'}</td>
-<<<<<<< HEAD
       <td class="p-4"><span class="inline-flex items-center gap-1 bg-primary/10 text-primary px-2.5 py-0.5 rounded-full text-xs font-semibold">👀 ${vc.total || 0} <span class="opacity-70">(${vc.uniques || 0})</span></span></td>
-=======
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
       <td class="p-4">
         <button class="delete-btn text-red-500 hover:text-red-700 transition-all text-sm font-medium">Delete</button>
       </td>
@@ -609,59 +503,19 @@ async function loadInvitations(filter) {
   });
 }
 
-<<<<<<< HEAD
-=======
-// --- CREATE INVITE ---
-adminGenerateBtn.addEventListener('click', async () => {
-  try {
-    const data = {
-      date: new Date().toISOString(),
-      location: 'Secret Spot',
-      dressCode: 'Casual',
-      activity: 'Candlelight Dinner',
-      status: 'pending',
-      createdBy: sessionStorage.getItem('admin_email') || 'admin',
-      createdAt: new Date().toISOString()
-    };
-    const newId = await addInvitation(data);
-    const link = buildInviteLink(newId, data);
-    adminGeneratedLink.textContent = link;
-    show(adminGenerateResult);
-    loadStats();
-    switchTab(tabInvitations);
-    show(invitationsTab);
-    loadInvitations(currentFilter);
-  } catch (err) {
-    alert('Error: ' + err.message);
-  }
-});
-
-adminCopyLink.addEventListener('click', () => {
-  navigator.clipboard.writeText(adminGeneratedLink.textContent).then(() => {
-    adminCopyLink.textContent = 'check';
-    setTimeout(() => { adminCopyLink.textContent = 'content_copy'; }, 1500);
-  });
-});
-
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
 // --- USERS ---
 async function loadUsers() {
   const users = await getUsers();
   usersTableBody.innerHTML = '';
 
   if (users.length === 0) {
-<<<<<<< HEAD
     usersTableBody.innerHTML = `<tr><td colspan="6" class="p-10 text-center text-on-surface-variant italic">No users yet.</td></tr>`;
-=======
-    usersTableBody.innerHTML = `<tr><td colspan="2" class="p-10 text-center text-on-surface-variant italic">No users yet.</td></tr>`;
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
     return;
   }
 
   users.forEach(u => {
     const tr = document.createElement('tr');
     tr.className = 'hover:bg-[#eef5f7] transition-colors';
-<<<<<<< HEAD
     const isSelf = u.username === sessionStorage.getItem('admin_email');
     tr.innerHTML = `
       <td class="p-4"><span class="font-mono text-xs text-on-surface-variant mr-2">#${u.id}</span>${u.username} ${isSelf ? '<span class="text-xs text-primary ml-2">(you)</span>' : ''}</td>
@@ -672,19 +526,11 @@ async function loadUsers() {
       <td class="p-4">
         <div class="flex items-center gap-3">
           <button class="view-user-btn text-primary hover:text-primary/70 transition-all text-sm font-medium">View</button>
-=======
-    const isSelf = u.email === sessionStorage.getItem('admin_email');
-    tr.innerHTML = `
-      <td class="p-4">${u.email} ${isSelf ? '<span class="text-xs text-primary ml-2">(you)</span>' : ''}</td>
-      <td class="p-4">
-        <div class="flex items-center gap-3">
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
           <button class="edit-user-btn text-primary hover:text-primary/70 transition-all text-sm font-medium">Edit</button>
           <button class="delete-user-btn text-red-500 hover:text-red-700 transition-all text-sm font-medium ${isSelf ? 'opacity-40 cursor-not-allowed' : ''}">${isSelf ? 'Cannot delete' : 'Delete'}</button>
         </div>
       </td>
     `;
-<<<<<<< HEAD
     tr.querySelector('.view-user-btn').addEventListener('click', () => openUserDetail(u.id));
     tr.querySelector('.edit-user-btn').addEventListener('click', () => openEditUserModal(u.id, u.username));
     const delBtn = tr.querySelector('.delete-user-btn');
@@ -699,17 +545,6 @@ async function loadUsers() {
         } catch (err) {
           alert(err.message || 'Could not delete user');
           delBtn.disabled = false;
-=======
-    const editBtn = tr.querySelector('.edit-user-btn');
-    editBtn.addEventListener('click', () => openEditUserModal(u.email, u.password));
-    const delBtn = tr.querySelector('.delete-user-btn');
-    if (!isSelf) {
-      delBtn.addEventListener('click', async () => {
-        if (confirm(`Delete user ${u.email}?`)) {
-          await deleteUser(u.email);
-          loadUsers();
-          loadStats();
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
         }
       });
     }
@@ -717,7 +552,6 @@ async function loadUsers() {
   });
 }
 
-<<<<<<< HEAD
 // --- ACTIVITY (logins) ---
 async function loadLogins() {
   loginsTableBody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-on-surface-variant italic">Loading…</td></tr>`;
@@ -851,8 +685,6 @@ udDeleteBtn.addEventListener('click', async () => {
 });
 
 
-=======
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
 createUserBtn.addEventListener('click', async () => {
   hide(userMsg);
   const email = newUserEmail.value.trim();
@@ -877,17 +709,10 @@ createUserBtn.addEventListener('click', async () => {
 newUserPass.addEventListener('keydown', (e) => { if (e.key === 'Enter') createUserBtn.click(); });
 
 // --- EDIT USER MODAL ---
-<<<<<<< HEAD
 function openEditUserModal(id, username) {
   editingUserId = id;
   editUserEmail.value = username;
   editUserPass.value = '';
-=======
-function openEditUserModal(email, password) {
-  editingUserEmail = email;
-  editUserEmail.value = email;
-  editUserPass.value = password;
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
   editUserMsg.classList.add('hidden');
   editUserModal.classList.remove('hidden');
   editUserModal.classList.add('flex');
@@ -896,11 +721,7 @@ function openEditUserModal(email, password) {
 function closeEditUserModal() {
   editUserModal.classList.add('hidden');
   editUserModal.classList.remove('flex');
-<<<<<<< HEAD
   editingUserId = null;
-=======
-  editingUserEmail = null;
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
 }
 
 editUserCancelBtn.addEventListener('click', closeEditUserModal);
@@ -911,23 +732,14 @@ editUserSaveBtn.addEventListener('click', async () => {
   hide(editUserMsg);
   const newEmail = editUserEmail.value.trim();
   const newPass = editUserPass.value;
-<<<<<<< HEAD
   if (!newEmail) {
     editUserMsg.textContent = 'Username is required';
-=======
-  if (!newEmail || !newPass) {
-    editUserMsg.textContent = 'Fill in all fields';
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
     editUserMsg.className = 'text-sm text-red-600';
     show(editUserMsg);
     return;
   }
   try {
-<<<<<<< HEAD
     await updateUser(editingUserId, newEmail, newPass);
-=======
-    await updateUser(editingUserEmail, newEmail, newPass);
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
     editUserMsg.textContent = '✅ User updated successfully';
     editUserMsg.className = 'text-sm text-green-600';
     show(editUserMsg);

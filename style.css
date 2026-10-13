@@ -430,7 +430,6 @@ html {
 .dark .border-primary-container\/30 { border-color: rgba(58, 102, 96, 0.4) !important; }
 .dark .bg-black\/10 { background: rgba(0, 0, 0, 0.35); }
 .dark .font-serif, .dark .italic.letter-question { color: inherit; }
-<<<<<<< HEAD
 .dark ::-webkit-calendar-picker-indicator { filter: invert(0.8); }
 /* ===== Loading overlay (after envelope) ===== */
 .loading-overlay {
@@ -493,6 +492,3 @@ html {
 .shake { animation: shakeX 0.4s ease; }
 .dark .loading-overlay { background: linear-gradient(160deg, #0d1211 0%, #12191a 100%); }
 .dark .loading-text { color: #8ebcb5; }
-=======
-.dark ::-webkit-calendar-picker-indicator { filter: invert(0.8); }
->>>>>>> 62de656ea3be8bdb24cb55274d561083d3e72af2
