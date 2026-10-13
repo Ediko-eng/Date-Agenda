@@ -1,0 +1,14 @@
+# Local secrets / environment
+inc/config.php
+
+# Database dumps
+*.sql
+
+# Logs & temp
+*.log
+*.tmp
+*.swp
+
+# OS / editor
+Thumbs.db
+.DS_Store
