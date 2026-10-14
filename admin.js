@@ -325,29 +325,70 @@ function renderStatusDonut(counts) {
   }).join('');
 }
 
-// Build the trailing 14-day window (real calendar days, keyed by local date).
-function buildDailyTrend(invites, dayCount = 14) {
-  const days = [];
-  const buckets = {};
+// Build one bucket per real calendar day, covering every day the app has
+// activity: from the earliest invitation created to today (not a fixed window).
+function buildDailyTrend(invites, opts = {}) {
+  const maxDays = opts.maxDays || 400;
+  const list = invites || [];
+
+  let min = null;
+  let max = null;
+  list.forEach(inv => {
+    const d = toDate(inv.createdAt);
+    if (!d) return;
+    d.setHours(0, 0, 0, 0);
+    if (!min || d < min) min = new Date(d);
+    if (!max || d > max) max = new Date(d);
+  });
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  for (let i = dayCount - 1; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(d.getDate() - i);
-    const key = localDayKey(d);
+
+  if (min && max) {
+    if (max > today) max = new Date(today);
+    if (min > max) min = new Date(max);
+  } else {
+    // No data yet: show the trailing 14 days so the chart is never a single bar.
+    max = new Date(today);
+    min = new Date(today);
+    min.setDate(min.getDate() - 13);
+  }
+
+  // Hard cap so an old record set can't blow up the chart.
+  const span = Math.round((max - min) / 86400000) + 1;
+  if (span > maxDays) {
+    min = new Date(max);
+    min.setDate(min.getDate() - (maxDays - 1));
+  }
+
+  const days = [];
+  const buckets = {};
+  const cursor = new Date(min);
+  while (cursor <= max) {
+    const key = localDayKey(cursor);
     buckets[key] = 0;
     days.push({
       key,
-      label: d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }),
-      full: d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+      date: new Date(cursor),
+      label: cursor.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }),
+      full: cursor.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+      showLabel: false,
     });
+    cursor.setDate(cursor.getDate() + 1);
   }
 
-  (invites || []).forEach(inv => {
+  list.forEach(inv => {
     const d = toDate(inv.createdAt);
     if (!d) return;
     const key = localDayKey(d);
     if (key in buckets) buckets[key]++;
+  });
+
+  // Keep the x-axis readable: at most ~14 real date labels across the range.
+  const maxLabels = 14;
+  const step = Math.max(1, Math.ceil(days.length / maxLabels));
+  days.forEach((d, i) => {
+    d.showLabel = i % step === 0 || i === days.length - 1;
   });
 
   return { days, buckets };
@@ -361,6 +402,9 @@ function renderTrendChart(invites) {
   const max = Math.max(1, ...days.map(d => buckets[d.key]));
   const windowTotal = days.reduce((sum, d) => sum + buckets[d.key], 0);
 
+  // Tighten spacing when the range spans a lot of days so the bars still fit.
+  chart.style.gap = days.length > 120 ? '0px' : days.length > 60 ? '1px' : days.length > 31 ? '2px' : '3px';
+
   chart.innerHTML = days.map(d => {
     const count = buckets[d.key];
     const px = count > 0 ? Math.max(3, Math.round((count / max) * 130)) : 2;
@@ -368,14 +412,17 @@ function renderTrendChart(invites) {
     return `<div class="trend-col" title="${d.full}: ${count}">
         <span class="trend-count">${count > 0 ? count : ''}</span>
         <div class="${cls}" style="height:${px}px"></div>
-        <span class="trend-day">${d.label}</span>
+        <span class="trend-day">${d.showLabel ? d.label : ''}</span>
       </div>`;
   }).join('');
 
   const summary = $('trendSummary');
   if (summary) {
-    const range = days.length ? `${days[0].label} – ${days[days.length - 1].label}` : '';
-    summary.textContent = range ? `${windowTotal} · ${range}` : `${windowTotal} in last ${days.length} days`;
+    if (days.length) {
+      summary.textContent = `${windowTotal} · ${days[0].full} – ${days[days.length - 1].full}`;
+    } else {
+      summary.textContent = '';
+    }
   }
 }
 
@@ -445,7 +492,7 @@ async function exportInvitationsCsv() {
       });
 
     rows.push([]);
-    rows.push(['Daily activity (last 14 days)']);
+    rows.push(['Daily activity (every day)']);
     rows.push(['Date', 'Invitations']);
     const { days, buckets } = buildDailyTrend(invites);
     days.forEach(d => rows.push([d.full, buckets[d.key]]));
