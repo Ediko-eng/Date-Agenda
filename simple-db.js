@@ -1,14 +1,27 @@
 // PHP/MySQL backend client for Date Agenda.
 // Talks to the split backends (user.php / admin.php). Keeps the same function names the app already uses.
 
-// Route to the split backends: the admin panel talks to admin.php,
-// every other page (index, account) talks to user.php.
+// ---- Backend endpoints (strangler migration) ----
+// The legacy split backends: the admin panel talks to admin.php, every other
+// page (index, account) talks to user.php.
 const PAGE = (window.location.pathname.split('/').pop() || '').toLowerCase();
-const API = PAGE === 'admin.html' ? 'admin.php' : 'user.php';
+const LEGACY_API = PAGE === 'admin.html' ? 'admin.php' : 'user.php';
 
-async function call(action, payload = {}, method = 'POST') {
+// The Laravel app lives beside the legacy files, under /public. Resolve it from
+// this module's own URL so it works no matter which page loads the script.
+const LARAVEL_API = (typeof import.meta !== 'undefined' && import.meta.url)
+  ? new URL('public/api', import.meta.url).href
+  : 'public/api';
+
+// Migration switch: prefer the Laravel API, but transparently fall back to the
+// legacy PHP endpoints if Laravel is unreachable. Append ?api=legacy to any page
+// to force the old endpoints without touching code.
+const FORCE_LEGACY = new URLSearchParams(window.location.search).get('api') === 'legacy';
+const USE_LARAVEL_API = !FORCE_LEGACY;
+
+async function request(base, action, payload = {}, method = 'POST') {
   const opts = { credentials: 'same-origin', headers: {} };
-  let url = `${API}?action=${encodeURIComponent(action)}`;
+  let url = `${base}?action=${encodeURIComponent(action)}`;
   if (method === 'POST') {
     opts.method = 'POST';
     opts.headers['Content-Type'] = 'application/json';
@@ -21,9 +34,35 @@ async function call(action, payload = {}, method = 'POST') {
   const res = await fetch(url, opts);
   const text = await res.text();
   let json;
-  try { json = JSON.parse(text); } catch { throw new Error('Server did not return JSON. Is PHP running?'); }
-  if (!json.ok) throw new Error(json.error || 'Request failed');
+  try {
+    json = JSON.parse(text);
+  } catch {
+    // Non-JSON response (server down / PHP not running): retryable so the
+    // caller can fall back to the legacy backend during migration.
+    const err = new Error('Server did not return JSON. Is PHP running?');
+    err.retryable = true;
+    throw err;
+  }
+  if (!json.ok) {
+    // A real application error (validation, 403, ...) must NOT trigger a
+    // fallback; only outright server failures (5xx) should.
+    const err = new Error(json.error || 'Request failed');
+    err.retryable = res.status >= 500;
+    throw err;
+  }
   return json;
+}
+
+async function call(action, payload = {}, method = 'POST') {
+  if (USE_LARAVEL_API) {
+    try {
+      return await request(LARAVEL_API, action, payload, method);
+    } catch (err) {
+      if (!err.retryable) throw err;
+      console.warn(`[simple-db] Laravel API failed for "${action}"; falling back to the legacy endpoint.`, err);
+    }
+  }
+  return request(LEGACY_API, action, payload, method);
 }
 
 // ========== AUTH ==========

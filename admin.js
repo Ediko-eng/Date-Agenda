@@ -1,4 +1,4 @@
-import { getAllInvitations, deleteInvitation, getUsers, addUser, deleteUser, updateUser, verifyUser, getAllViewCounts, getUserDetail, getLogins, deleteLogin, clearLogins, getSessionInfo, adminLogout } from './simple-db.js?v=7';
+import { getAllInvitations, deleteInvitation, getUsers, addUser, deleteUser, updateUser, verifyUser, getAllViewCounts, getUserDetail, getLogins, deleteLogin, clearLogins, getSessionInfo, adminLogout } from './simple-db.js?v=8';
 
 const $ = id => document.getElementById(id);
 

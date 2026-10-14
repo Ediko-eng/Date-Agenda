@@ -1,4 +1,4 @@
-import { addInvitation, getInvitation, getAllInvitations, deleteInvitation, updateInvitation, encodeInvite, decodeInvite, buildInviteLink, getSession, getSessionInfo, loginUser, registerUser, logoutUser, recordView, getViews, addPhoto, getPhotos, deletePhoto } from './simple-db.js?v=7';
+import { addInvitation, getInvitation, getAllInvitations, deleteInvitation, updateInvitation, encodeInvite, decodeInvite, buildInviteLink, getSession, getSessionInfo, loginUser, registerUser, logoutUser, recordView, getViews, addPhoto, getPhotos, deletePhoto } from './simple-db.js?v=8';
 
 document.addEventListener('DOMContentLoaded', () => {
   let currentInviteId = new URLSearchParams(location.search).get('i');

@@ -1,4 +1,4 @@
-import { getSession, loginUser, registerUser, logoutUser, updateAccount } from './simple-db.js?v=7';
+import { getSession, loginUser, registerUser, logoutUser, updateAccount } from './simple-db.js?v=8';
 
 const $ = id => document.getElementById(id);
 
