@@ -1,11 +1,15 @@
 <?php
 
+use App\Http\Controllers\Api\DispatchController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Legacy-compatible endpoint: /api?action=...
+Route::match(['get', 'post'], '/api', [DispatchController::class, 'handle']);
 
 Route::prefix('api')->group(function () {
     Route::get('/session', [AuthController::class, 'session']);

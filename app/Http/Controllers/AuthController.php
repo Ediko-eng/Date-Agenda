@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\RespondsWithApi;
 use App\Models\Login;
 use App\Models\User;
 use App\Support\Admin;
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    use RespondsWithApi;
+
     public function session(Request $request): JsonResponse
     {
         $user = $request->user();
@@ -203,25 +206,5 @@ class AuthController extends Controller
         $user->save();
 
         return response()->json(['ok' => true, 'user' => $this->publicUser($user)]);
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function publicUser(User $user): array
-    {
-        return [
-            'id' => (int) $user->id,
-            'username' => $user->username,
-            'full_name' => (string) ($user->full_name ?? ''),
-            'gender' => (string) ($user->gender ?? ''),
-            'birth_date' => $user->birth_date ? $user->birth_date->format('Y-m-d') : null,
-            'address' => (string) ($user->address ?? ''),
-        ];
-    }
-
-    private function fail(string $message, int $code = 400): JsonResponse
-    {
-        return response()->json(['ok' => false, 'error' => $message], $code);
     }
 }
