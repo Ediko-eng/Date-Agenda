@@ -325,21 +325,22 @@ function renderStatusDonut(counts) {
   }).join('');
 }
 
-function renderTrendChart(invites) {
-  const chart = $('trendChart');
-  if (!chart) return;
-  const DAYS = 14;
-
+// Build the trailing 14-day window (real calendar days, keyed by local date).
+function buildDailyTrend(invites, dayCount = 14) {
   const days = [];
   const buckets = {};
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  for (let i = DAYS - 1; i >= 0; i--) {
+  for (let i = dayCount - 1; i >= 0; i--) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
     const key = localDayKey(d);
     buckets[key] = 0;
-    days.push({ key, label: String(d.getDate()) });
+    days.push({
+      key,
+      label: d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }),
+      full: d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+    });
   }
 
   (invites || []).forEach(inv => {
@@ -349,6 +350,14 @@ function renderTrendChart(invites) {
     if (key in buckets) buckets[key]++;
   });
 
+  return { days, buckets };
+}
+
+function renderTrendChart(invites) {
+  const chart = $('trendChart');
+  if (!chart) return;
+
+  const { days, buckets } = buildDailyTrend(invites);
   const max = Math.max(1, ...days.map(d => buckets[d.key]));
   const windowTotal = days.reduce((sum, d) => sum + buckets[d.key], 0);
 
@@ -356,7 +365,7 @@ function renderTrendChart(invites) {
     const count = buckets[d.key];
     const px = count > 0 ? Math.max(3, Math.round((count / max) * 130)) : 2;
     const cls = count > 0 ? 'trend-bar' : 'trend-bar trend-bar-empty';
-    return `<div class="trend-col" title="${d.key}: ${count}">
+    return `<div class="trend-col" title="${d.full}: ${count}">
         <span class="trend-count">${count > 0 ? count : ''}</span>
         <div class="${cls}" style="height:${px}px"></div>
         <span class="trend-day">${d.label}</span>
@@ -364,7 +373,10 @@ function renderTrendChart(invites) {
   }).join('');
 
   const summary = $('trendSummary');
-  if (summary) summary.textContent = `${windowTotal} in last 14 days`;
+  if (summary) {
+    const range = days.length ? `${days[0].label} – ${days[days.length - 1].label}` : '';
+    summary.textContent = range ? `${windowTotal} · ${range}` : `${windowTotal} in last ${days.length} days`;
+  }
 }
 
 // --- EXPORT (CSV opens directly in Excel) ---
@@ -431,6 +443,12 @@ async function exportInvitationsCsv() {
           formatDateTime(inv.createdAt),
         ]);
       });
+
+    rows.push([]);
+    rows.push(['Daily activity (last 14 days)']);
+    rows.push(['Date', 'Invitations']);
+    const { days, buckets } = buildDailyTrend(invites);
+    days.forEach(d => rows.push([d.full, buckets[d.key]]));
 
     const csv = '\uFEFF' + csvRows(rows);
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
