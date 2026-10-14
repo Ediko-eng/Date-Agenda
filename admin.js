@@ -394,23 +394,56 @@ function buildDailyTrend(invites, opts = {}) {
   return { days, buckets };
 }
 
+const TREND_BAR_AREA = 154;
+
+function niceScale(max, targetTicks = 4) {
+  const steps = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000];
+  if (max <= targetTicks + 1) return { max: Math.max(1, max), step: 1 };
+  const raw = max / targetTicks;
+  const step = steps.find(s => s >= raw) || Math.ceil(raw / 1000) * 1000;
+  return { max: Math.ceil(max / step) * step, step };
+}
+
 function renderTrendChart(invites) {
   const chart = $('trendChart');
   if (!chart) return;
 
   const { days, buckets } = buildDailyTrend(invites);
-  const max = Math.max(1, ...days.map(d => buckets[d.key]));
+  const rawMax = Math.max(1, ...days.map(d => buckets[d.key]));
+  const { max: niceMax, step } = niceScale(rawMax);
   const windowTotal = days.reduce((sum, d) => sum + buckets[d.key], 0);
 
   chart.innerHTML = days.map(d => {
     const count = buckets[d.key];
-    const px = count > 0 ? Math.max(3, Math.round((count / max) * 130)) : 2;
+    const px = count > 0 ? Math.max(4, Math.round((count / niceMax) * TREND_BAR_AREA)) : 2;
     const cls = count > 0 ? 'trend-bar' : 'trend-bar trend-bar-empty';
     return `<div class="trend-col" title="${d.full}: ${count}">
         <span class="trend-count">${count > 0 ? count : ''}</span>
         <div class="${cls}" style="height:${px}px"></div>
       </div>`;
   }).join('');
+
+  const ticks = [];
+  for (let t = 0; t <= niceMax; t += step) ticks.push(t);
+  if (ticks[ticks.length - 1] !== niceMax) ticks.push(niceMax);
+
+  const grid = $('trendGrid');
+  if (grid) {
+    grid.innerHTML = ticks.map(t => {
+      const bottom = Math.round((t / niceMax) * TREND_BAR_AREA);
+      const cls = t === 0 ? 'trend-gridline trend-baseline' : 'trend-gridline';
+      return `<div class="${cls}" style="bottom:${bottom}px"></div>`;
+    }).join('');
+  }
+
+  const yaxis = $('trendYAxis');
+  if (yaxis) {
+    yaxis.innerHTML = ticks.map(t => {
+      const bottom = Math.round((t / niceMax) * TREND_BAR_AREA);
+      const style = t === 0 ? 'bottom:0' : `bottom:${bottom}px; transform: translateY(50%)`;
+      return `<span class="trend-ytick" style="${style}">${t}</span>`;
+    }).join('');
+  }
 
   const labels = $('trendLabels');
   if (labels) {

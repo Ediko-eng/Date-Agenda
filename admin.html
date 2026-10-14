@@ -137,9 +137,16 @@
     .legend-pct { color: #6b7d7c; font-size: 0.75rem; width: 3rem; text-align: right; }
     .trend-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.75rem; }
     .chart-panel-title { font-weight: 600; color: #3a6660; font-size: 0.9rem; }
-    .trend-scroll { overflow-x: auto; overflow-y: hidden; }
+    .trend-wrap { display: flex; align-items: flex-start; gap: 0.4rem; }
+    .trend-yaxis { flex: 0 0 auto; width: 26px; height: 170px; position: relative; }
+    .trend-ytick { position: absolute; right: 0; font-size: 0.6rem; line-height: 1; color: #93a4a2; }
+    .trend-scroll { flex: 1 1 auto; overflow-x: auto; overflow-y: hidden; }
     .trend-inner { width: max-content; min-width: 100%; }
-    .trend-chart { display: flex; align-items: flex-end; justify-content: center; gap: 3px; height: 150px; border-bottom: 1px solid rgba(58, 102, 96, 0.25); }
+    .trend-plot { position: relative; height: 170px; }
+    .trend-grid { position: absolute; inset: 0; pointer-events: none; }
+    .trend-gridline { position: absolute; left: 0; right: 0; border-top: 1px solid rgba(58, 102, 96, 0.10); }
+    .trend-baseline { border-top-color: rgba(58, 102, 96, 0.35); }
+    .trend-chart { position: relative; display: flex; align-items: flex-end; justify-content: center; gap: 3px; height: 170px; }
     .trend-col {
       flex: 0 0 auto;
       width: 36px;
@@ -148,18 +155,18 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-end;
-      gap: 4px;
     }
     .trend-bar {
       width: 100%;
       max-width: 24px;
-      border-radius: 3px 3px 0 0;
-      background: #3a6660;
+      border-radius: 4px 4px 0 0;
+      background: linear-gradient(180deg, #5b9c93 0%, #2f5751 100%);
       transition: height 0.4s ease;
     }
-    .trend-bar-empty { background: rgba(58, 102, 96, 0.15); }
-    .trend-count { font-size: 0.6rem; font-weight: 600; color: #3a6660; line-height: 1; }
-    .trend-labels { display: flex; justify-content: center; gap: 3px; margin-top: 0.35rem; }
+    .trend-col:hover .trend-bar { filter: brightness(1.08); }
+    .trend-bar-empty { background: rgba(58, 102, 96, 0.12); border-radius: 0; }
+    .trend-count { font-size: 0.6rem; font-weight: 600; color: #3a6660; line-height: 1; margin-bottom: 3px; }
+    .trend-labels { display: flex; justify-content: center; gap: 3px; margin-top: 0.45rem; }
     .trend-label-col { flex: 0 0 auto; width: 36px; text-align: center; font-size: 0.6rem; color: #6b7d7c; white-space: nowrap; overflow: hidden; }
 
     .table-container {
@@ -489,10 +496,16 @@
                     <span class="chart-panel-title">Invitations over time</span>
                     <span id="trendSummary" class="text-xs text-on-surface-variant"></span>
                   </div>
-                  <div class="trend-scroll">
-                    <div class="trend-inner">
-                      <div id="trendChart" class="trend-chart"></div>
-                      <div id="trendLabels" class="trend-labels"></div>
+                  <div class="trend-wrap">
+                    <div class="trend-yaxis" id="trendYAxis"></div>
+                    <div class="trend-scroll">
+                      <div class="trend-inner">
+                        <div class="trend-plot">
+                          <div class="trend-grid" id="trendGrid"></div>
+                          <div id="trendChart" class="trend-chart"></div>
+                        </div>
+                        <div id="trendLabels" class="trend-labels"></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -651,6 +664,6 @@
     </div>
   </div>
 
-  <script type="module" src="admin.js?v=15"></script>
+  <script type="module" src="admin.js?v=16"></script>
 </body>
 </html>
