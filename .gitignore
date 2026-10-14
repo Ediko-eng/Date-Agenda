@@ -1,5 +1,8 @@
 # Local secrets / environment
 inc/config.php
+.env
+.env.backup
+.env.production
 
 # Database dumps
 *.sql
@@ -8,8 +11,31 @@ inc/config.php
 *.log
 *.tmp
 *.swp
+.phpunit.result.cache
 
 # OS / editor
 Thumbs.db
 .DS_Store
 .qodo/
+/.idea
+/.vscode
+/.nova
+/.zed
+/.cursor/
+/.codex
+/.phpunit.cache
+
+# Laravel
+.phpactor.json
+/auth.json
+/node_modules
+/public/build
+/public/fonts-manifest.dev.json
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+_ide_helper.php
+Homestead.json
+Homestead.yaml
