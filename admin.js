@@ -409,9 +409,15 @@ function renderTrendChart(invites) {
     return `<div class="trend-col" title="${d.full}: ${count}">
         <span class="trend-count">${count > 0 ? count : ''}</span>
         <div class="${cls}" style="height:${px}px"></div>
-        <span class="trend-day">${d.showLabel ? d.label : ''}</span>
       </div>`;
   }).join('');
+
+  const labels = $('trendLabels');
+  if (labels) {
+    labels.innerHTML = days.map(d =>
+      `<div class="trend-label-col">${d.showLabel ? d.label : ''}</div>`
+    ).join('');
+  }
 
   const summary = $('trendSummary');
   if (summary) {
