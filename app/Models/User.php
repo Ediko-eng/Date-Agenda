@@ -2,48 +2,63 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
+    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    protected $table = 'users';
+
+    /** The table only tracks created_at. */
+    const UPDATED_AT = null;
+
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'username',
+        'password_hash',
+        'full_name',
+        'gender',
+        'birth_date',
+        'address',
+        'last_login_at',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password_hash',
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
      * @return array<string, string>
      */
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'birth_date' => 'date',
+            'last_login_at' => 'datetime',
+            'created_at' => 'datetime',
         ];
+    }
+
+    public function getAuthPassword(): string
+    {
+        return $this->password_hash;
+    }
+
+    public function invitations()
+    {
+        return $this->hasMany(Invitation::class, 'user_id');
+    }
+
+    public function responses()
+    {
+        return $this->hasMany(Response::class, 'user_id');
+    }
+
+    public function logins()
+    {
+        return $this->hasMany(Login::class, 'user_id');
     }
 }
