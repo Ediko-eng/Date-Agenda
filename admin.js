@@ -402,9 +402,6 @@ function renderTrendChart(invites) {
   const max = Math.max(1, ...days.map(d => buckets[d.key]));
   const windowTotal = days.reduce((sum, d) => sum + buckets[d.key], 0);
 
-  // Tighten spacing when the range spans a lot of days so the bars still fit.
-  chart.style.gap = days.length > 120 ? '0px' : days.length > 60 ? '1px' : days.length > 31 ? '2px' : '3px';
-
   chart.innerHTML = days.map(d => {
     const count = buckets[d.key];
     const px = count > 0 ? Math.max(3, Math.round((count / max) * 130)) : 2;

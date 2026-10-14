@@ -137,21 +137,21 @@
     .legend-pct { color: #6b7d7c; font-size: 0.75rem; width: 3rem; text-align: right; }
     .trend-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.75rem; }
     .chart-panel-title { font-weight: 600; color: #3a6660; font-size: 0.9rem; }
-    .trend-chart { display: flex; align-items: flex-end; justify-content: center; gap: 3px; height: 170px; }
+    .trend-scroll { overflow-x: auto; overflow-y: hidden; }
+    .trend-chart { display: flex; align-items: flex-end; justify-content: center; gap: 3px; height: 170px; width: max-content; min-width: 100%; }
     .trend-col {
-      flex: 1 1 0;
-      max-width: 44px;
+      flex: 0 0 auto;
+      width: 36px;
       height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-end;
       gap: 4px;
-      min-width: 0;
     }
     .trend-bar {
       width: 100%;
-      max-width: 22px;
+      max-width: 24px;
       border-radius: 3px 3px 0 0;
       background: #3a6660;
       transition: height 0.4s ease;
@@ -487,7 +487,9 @@
                     <span class="chart-panel-title">Invitations over time</span>
                     <span id="trendSummary" class="text-xs text-on-surface-variant"></span>
                   </div>
-                  <div id="trendChart" class="trend-chart"></div>
+                  <div class="trend-scroll">
+                    <div id="trendChart" class="trend-chart"></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -644,6 +646,6 @@
     </div>
   </div>
 
-  <script type="module" src="admin.js?v=13"></script>
+  <script type="module" src="admin.js?v=14"></script>
 </body>
 </html>
