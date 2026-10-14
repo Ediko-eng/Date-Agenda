@@ -128,6 +128,65 @@ The migration is done **in place** (strangler pattern): Laravel was merged into 
 
 ---
 
+## 🧩 Laravel Framework Reference
+
+Every framework class in `app/`, what it does, and its key methods. The Laravel layer reproduces the legacy JSON contract **exactly**, so the front-end cannot tell which backend answered.
+
+### Controllers
+
+| Class | File | Methods | Role |
+| :--- | :--- | :--- | :--- |
+| `AuthController` | `app/Http/Controllers/AuthController.php` | `session`, `register`, `login`, `logout`, `adminLogout`, `accountUpdate` | Session + account auth; uses the `RespondsWithApi` trait |
+| `ApiController` | `app/Http/Controllers/Api/ApiController.php` | — | Abstract base for the API controllers |
+| `DispatchController` | `app/Http/Controllers/Api/DispatchController.php` | `handle` | Maps a legacy `?action=` to the right controller method |
+| `InvitationController` | `app/Http/Controllers/Api/InvitationController.php` | `index`, `show`, `store`, `update`, `destroy` | Invitations CRUD + respond (with ownership rules) |
+| `PhotoController` | `app/Http/Controllers/Api/PhotoController.php` | `index`, `store`, `destroy` | Per-invitation photo gallery |
+| `ViewController` | `app/Http/Controllers/Api/ViewController.php` | `store`, `index`, `all` | View tracking & analytics |
+| `UserAdminController` | `app/Http/Controllers/Api/UserAdminController.php` | `index`, `show`, `store`, `update`, `destroy` | Admin user management |
+| `LoginAdminController` | `app/Http/Controllers/Api/LoginAdminController.php` | `index`, `destroy`, `clear` | Login-activity management |
+
+### Middleware & traits
+
+| Class | File | Methods | Role |
+| :--- | :--- | :--- | :--- |
+| `EnsureAdmin` | `app/Http/Middleware/EnsureAdmin.php` | `handle` | Registered as the `admin` alias; rejects non-admin requests |
+| `RespondsWithApi` | `app/Http/Controllers/Concerns/RespondsWithApi.php` | `ok`, `fail`, `isAdmin`, `publicUser`, `newToken`, `normalizeDate`, `ownsInvitation`, `shapeInvitation` | Shared JSON envelope, shaping, and admin/ownership helpers |
+
+### Models (Eloquent)
+
+| Model | File | Relations / methods | Table |
+| :--- | :--- | :--- | :--- |
+| `User` | `app/Models/User.php` | `getAuthPassword`, `invitations`, `responses`, `logins` | `users` |
+| `Invitation` | `app/Models/Invitation.php` | `user`, `response`, `photoUploads`, `views` | `invitations` |
+| `Response` | `app/Models/Response.php` | `invitation`, `user` | `responses` |
+| `Photo` | `app/Models/Photo.php` | `invitation` | `photos` |
+| `View` | `app/Models/View.php` | `invitation` | `views` |
+| `Login` | `app/Models/Login.php` | `user` | `logins` |
+
+### Support classes
+
+| Class | File | Methods | Role |
+| :--- | :--- | :--- | :--- |
+| `Admin` | `app/Support/Admin.php` | `check`, `isAdminUsername`, `cookieValid`, `setCookie`, `clearCookie`, `sign` | Signed admin cookie (HMAC-SHA256) + admin identity |
+| `ClientInfo` | `app/Support/ClientInfo.php` | `ip`, `parse` | Extracts IP and parses the user agent for the login log |
+
+### Config, bootstrap & database
+
+| File | Purpose |
+| :--- | :--- |
+| `config/dateagenda.php` | `admin_username`, `admin_cookie`, `admin_cookie_ttl`, `admin_secret` (from `DATEAGENDA_*` env vars) |
+| `bootstrap/app.php` | Registers the `admin` middleware alias and CSRF exemptions for `api` / `api/*` |
+| `bootstrap/providers.php` | Registers `AppServiceProvider` |
+| `app/Providers/AppServiceProvider.php` | `register` / `boot` (incl. `Schema::defaultStringLength(191)`) |
+| `routes/web.php` | `/`, `/api`, and the `/api/*` auth routes |
+| `routes/console.php` | Console routes |
+| `database/migrations/` | `users`, `invitations`, `responses`, `photos`, `views`, `logins` (+ framework cache/jobs tables) |
+| `database/factories/UserFactory.php` · `database/seeders/DatabaseSeeder.php` | Model factory & (intentionally empty) seeder |
+| `public/index.php` | Laravel web-root front controller |
+| `tests/` | PHPUnit test suites (`Feature`, `Unit`) |
+
+---
+
 ## 🔌 API Reference
 
 All endpoints receive `?action=<name>` (GET for reads, `POST` with a JSON body for writes) and return JSON: `{ "ok": true, ... }` or `{ "ok": false, "error": "…" }`.
